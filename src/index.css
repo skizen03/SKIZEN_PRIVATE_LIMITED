@@ -1,0 +1,75 @@
+@import 'lenis/dist/lenis.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  /* Lenis drives smooth scrolling when enabled; avoid double-smoothing with native behavior */
+  html {
+    scroll-behavior: auto;
+  }
+
+  /* Smoother vertical panning on real touch devices (Lenis adds .lenis on html) */
+  @media (hover: none), (pointer: coarse) {
+    html.lenis {
+      touch-action: pan-y pinch-zoom;
+      -webkit-overflow-scrolling: touch;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    .animate-marquee {
+      animation: none !important;
+    }
+  }
+  body {
+    @apply antialiased text-ski-black bg-white;
+  }
+}
+
+@layer utilities {
+  .scroll-mt-header {
+    scroll-margin-top: 5.5rem;
+  }
+}
+
+/* Visible on keyboard focus — improves a11y and crawlable landmark use */
+.skip-to-main {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 200;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  background-color: #1d1d1d;
+  color: #fff;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+  outline: none;
+}
+.skip-to-main:focus {
+  left: 1rem;
+  top: 1rem;
+  outline: 2px solid #f56702;
+  outline-offset: 2px;
+}
+
+.legal-prose h2 {
+  @apply text-lg font-semibold tracking-tight text-ski-black;
+}
+.legal-prose p {
+  @apply text-zen-muted;
+}
+.legal-prose ul {
+  @apply mt-3 list-disc space-y-2 pl-5 text-zen-muted;
+}
+.legal-prose a {
+  @apply font-medium text-ski-accent underline-offset-2 hover:underline;
+}
+.legal-prose strong {
+  @apply font-semibold text-ski-black;
+}
