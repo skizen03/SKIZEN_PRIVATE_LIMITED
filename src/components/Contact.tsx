@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
 import { Mail, Phone, MapPin, Send, CheckCircle, MessageCircle, Linkedin, Twitter } from 'lucide-react';
 import { easeOut } from '../lib/motion';
-import { CONTACT_EMAIL, CONTACT_FORM_ENDPOINT } from '../lib/site';
+import { CONTACT_EMAIL, CONTACT_FORM_ENDPOINT, SOCIAL_LINKS } from '../lib/site';
 import { SectionWordTitle } from './typography/WordMotion';
 
 import { useSectionMotion, interactiveCardProps } from '../hooks/useSectionMotion';
@@ -70,6 +70,11 @@ const Contact: React.FC = () => {
     { icon: Phone, title: 'Phone', value: '+91 63056 80890', link: 'tel:+916305680890' },
     { icon: MapPin, title: 'Head office', value: 'Hyderabad, India', link: '#contact' },
   ];
+
+  const socials = [
+    { icon: Linkedin, href: SOCIAL_LINKS.linkedin, label: 'LinkedIn' },
+    { icon: Twitter, href: SOCIAL_LINKS.x, label: 'Twitter / X' },
+  ].filter((s) => Boolean(s.href));
 
   return (
     <motion.section
@@ -237,22 +242,22 @@ const Contact: React.FC = () => {
               ))}
             </div>
 
-            <div className="flex gap-3">
-              <a
-                href="#"
-                className="flex h-10 w-10 items-center justify-center rounded-lg border border-zen-line text-zen-muted transition-colors hover:border-ski-accent hover:text-ski-accent"
-                aria-label="LinkedIn"
-              >
-                <Linkedin className="h-4 w-4" strokeWidth={1.5} />
-              </a>
-              <a
-                href="#"
-                className="flex h-10 w-10 items-center justify-center rounded-lg border border-zen-line text-zen-muted transition-colors hover:border-ski-accent hover:text-ski-accent"
-                aria-label="Twitter / X"
-              >
-                <Twitter className="h-4 w-4" strokeWidth={1.5} />
-              </a>
-            </div>
+            {socials.length ? (
+              <div className="flex gap-3">
+                {socials.map((s) => (
+                  <a
+                    key={s.label}
+                    href={s.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex h-10 w-10 items-center justify-center rounded-lg border border-zen-line text-zen-muted transition-colors hover:border-ski-accent hover:text-ski-accent"
+                    aria-label={s.label}
+                  >
+                    <s.icon className="h-4 w-4" strokeWidth={1.5} />
+                  </a>
+                ))}
+              </div>
+            ) : null}
 
             
           </motion.div>

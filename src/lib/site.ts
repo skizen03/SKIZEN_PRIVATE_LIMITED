@@ -9,3 +9,10 @@ export const CONTACT_EMAIL = 'info@skizen.in';
 /** FormSubmit AJAX endpoint (hash hides email from URL; configure in FormSubmit dashboard) */
 export const CONTACT_FORM_ENDPOINT =
   'https://formsubmit.co/ajax/9fc95c8217501220f0fb53abf6239805';
+
+export const SOCIAL_LINKS = {
+  linkedin: '',
+  x: '',
+  instagram: '',
+  github: '',
+} as const;

@@ -3,17 +3,18 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useSectionMotion } from '../hooks/useSectionMotion';
 import { Github, Linkedin, Twitter, Instagram, ArrowRight } from 'lucide-react';
+import { SOCIAL_LINKS } from '../lib/site';
 
 const Footer: React.FC = () => {
   const { sectionProps } = useSectionMotion();
   const [email, setEmail] = useState('');
 
   const socialLinks = [
-    { icon: Linkedin, href: '#', label: 'LinkedIn' },
-    { icon: Twitter, href: '#', label: 'Twitter' },
-    { icon: Instagram, href: '#', label: 'Instagram' },
-    { icon: Github, href: '#', label: 'GitHub' },
-  ];
+    { icon: Linkedin, href: SOCIAL_LINKS.linkedin, label: 'LinkedIn' },
+    { icon: Twitter, href: SOCIAL_LINKS.x, label: 'Twitter / X' },
+    { icon: Instagram, href: SOCIAL_LINKS.instagram, label: 'Instagram' },
+    { icon: Github, href: SOCIAL_LINKS.github, label: 'GitHub' },
+  ].filter((s) => Boolean(s.href));
 
   const columns = [
     {
@@ -90,6 +91,8 @@ const Footer: React.FC = () => {
                 <a
                   key={s.label}
                   href={s.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   aria-label={s.label}
                   className="flex h-10 w-10 items-center justify-center rounded-lg border border-white/10 text-white/70 transition-colors hover:border-ski-accent hover:text-ski-accent"
                 >
