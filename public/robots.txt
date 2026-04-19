@@ -1,24 +1,98 @@
 # https://www.robotstxt.org/robotstxt.html
+# Allow all crawlers by default
 User-agent: *
 Allow: /
 
-# Explicitly allow common AI crawlers
+# ─── OpenAI / ChatGPT ───────────────────────────────────────────────────────
 User-agent: GPTBot
 Allow: /
 
 User-agent: ChatGPT-User
 Allow: /
 
-User-agent: Google-Extended
+User-agent: OAI-SearchBot
 Allow: /
 
-User-agent: CCBot
-Allow: /
-
-User-agent: PerplexityBot
-Allow: /
-
+# ─── Anthropic / Claude ─────────────────────────────────────────────────────
 User-agent: ClaudeBot
 Allow: /
 
+User-agent: Claude-User
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+# ─── Google / Gemini ────────────────────────────────────────────────────────
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Googlebot
+Allow: /
+
+User-agent: Googlebot-Image
+Allow: /
+
+# ─── Perplexity ─────────────────────────────────────────────────────────────
+User-agent: PerplexityBot
+Allow: /
+
+# ─── Common Crawl (used to train many AI models) ────────────────────────────
+User-agent: CCBot
+Allow: /
+
+# ─── Meta / Llama ───────────────────────────────────────────────────────────
+User-agent: FacebookBot
+Allow: /
+
+User-agent: Meta-ExternalAgent
+Allow: /
+
+User-agent: Meta-ExternalFetcher
+Allow: /
+
+# ─── Microsoft / Bing / Copilot ─────────────────────────────────────────────
+User-agent: Bingbot
+Allow: /
+
+User-agent: msnbot
+Allow: /
+
+User-agent: Bingbot-Media
+Allow: /
+
+# ─── Apple / Siri ───────────────────────────────────────────────────────────
+User-agent: Applebot
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+# ─── Cohere ─────────────────────────────────────────────────────────────────
+User-agent: cohere-ai
+Allow: /
+
+# ─── Mistral / Le Chat ──────────────────────────────────────────────────────
+User-agent: MistralBot
+Allow: /
+
+# ─── Bytedance / Doubao ─────────────────────────────────────────────────────
+User-agent: Bytespider
+Allow: /
+
+# ─── You.com ────────────────────────────────────────────────────────────────
+User-agent: YouBot
+Allow: /
+
+# ─── DuckDuckGo ─────────────────────────────────────────────────────────────
+User-agent: DuckAssistBot
+Allow: /
+
+User-agent: Claude-User
+Disallow: /
+
+User-agent: Claude-SearchBot
+Disallow: /
+
+# ─── Sitemap ────────────────────────────────────────────────────────────────
 Sitemap: https://skizen.in/sitemap.xml
