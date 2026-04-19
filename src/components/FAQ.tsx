@@ -4,9 +4,8 @@ import { useInView } from 'react-intersection-observer';
 import { ChevronDown } from 'lucide-react';
 import { faqs } from '../data/faqs';
 import { SITE_ORIGIN } from '../lib/site';
-import CorporateTechVisual from './tech-visuals/CorporateTechVisual';
 import { easeOut } from '../lib/motion';
-import { useSectionMotion, interactiveSoftProps } from '../hooks/useSectionMotion';
+import { useSectionMotion } from '../hooks/useSectionMotion';
 
 const FAQ: React.FC = () => {
   const { sectionProps } = useSectionMotion();
@@ -35,32 +34,28 @@ const FAQ: React.FC = () => {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: faqJsonLd }} />
     <motion.section
       id="faq"
-      className="scroll-mt-header bg-ski-gray py-20 md:py-24 lg:py-28"
+      className="scroll-mt-header bg-surface py-24 md:py-28 lg:py-32"
       {...sectionProps}
     >
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8" ref={ref}>
         <motion.div
-          ref={ref}
           initial={{ opacity: 0, y: 24 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.55, ease: easeOut }}
-          className="mb-10 grid items-center gap-10 lg:grid-cols-2 lg:gap-16 lg:items-start"
+          transition={{ duration: 0.6, ease: easeOut }}
+          className="mb-12 text-center"
         >
-          <div className="mx-auto max-w-xl text-center lg:mx-0 lg:text-left">
-            <h2 className="text-3xl font-semibold tracking-tight text-ski-black md:text-4xl">
-              Frequently asked questions
-            </h2>
-            <p className="mt-3 text-zen-muted">
-              Quick answers about our{' '}
-              <a href="#services" className="text-ski-accent underline-offset-4 hover:underline">
-                software development company
-              </a>{' '}
-              capabilities and engagement model.
-            </p>
-          </div>
-          <div className="mx-auto flex w-full max-w-[280px] justify-center sm:max-w-xs lg:max-w-none lg:justify-end">
-            <CorporateTechVisual variant="faq" compact className="max-w-[320px]" />
-          </div>
+          <span className="badge mb-5 inline-flex">FAQ</span>
+          <h2 className="text-display mx-auto max-w-2xl text-ink">
+            Frequently asked{' '}
+            <span className="heading-serif gradient-text">questions</span>
+          </h2>
+          <p className="mx-auto mt-5 max-w-lg text-base text-muted">
+            Quick answers about our{' '}
+            <a href="#services" className="font-medium text-brand underline-offset-4 hover:underline">
+              software development
+            </a>{' '}
+            capabilities and engagement model.
+          </p>
         </motion.div>
 
         <div className="mx-auto max-w-3xl space-y-3">
@@ -69,15 +64,14 @@ const FAQ: React.FC = () => {
               key={item.q}
               initial={{ opacity: 0, y: 12 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.4, delay: index * 0.05, ease: easeOut }}
-              {...interactiveSoftProps}
+              transition={{ duration: 0.4, delay: index * 0.045, ease: easeOut }}
             >
-              <details className="group rounded-xl border border-zen-line bg-white shadow-sm open:shadow-card open:ring-1 open:ring-ski-accent/10">
-                <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-4 text-left text-sm font-semibold text-ski-black md:text-base [&::-webkit-details-marker]:hidden">
+              <details className="group rounded-2xl border border-[#E5E2DE] bg-white shadow-card open:shadow-card-hover open:ring-1 open:ring-brand/10">
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-6 py-5 text-left text-sm font-semibold text-ink md:text-base [&::-webkit-details-marker]:hidden">
                   {item.q}
-                  <ChevronDown className="h-5 w-5 shrink-0 text-zen-muted transition-transform duration-300 group-open:rotate-180" />
+                  <ChevronDown className="h-4 w-4 shrink-0 text-muted transition-transform duration-300 group-open:rotate-180 group-open:text-brand" />
                 </summary>
-                <div className="border-t border-zen-line px-5 py-4 text-sm leading-relaxed text-zen-muted">
+                <div className="border-t border-[#E5E2DE] px-6 py-5 text-sm leading-[1.7] text-muted">
                   {item.a}
                 </div>
               </details>

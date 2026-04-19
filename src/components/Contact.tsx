@@ -6,7 +6,7 @@ import { easeOut } from '../lib/motion';
 import { CONTACT_EMAIL, CONTACT_FORM_ENDPOINT, SOCIAL_LINKS } from '../lib/site';
 import { SectionWordTitle } from './typography/WordMotion';
 
-import { useSectionMotion, interactiveCardProps } from '../hooks/useSectionMotion';
+import { useSectionMotion } from '../hooks/useSectionMotion';
 
 const WHATSAPP_HREF =
   'https://wa.me/916305680890?text=' +
@@ -79,29 +79,27 @@ const Contact: React.FC = () => {
   return (
     <motion.section
       id="contact"
-      className="scroll-mt-header border-t border-zen-line bg-white py-20 md:py-24 lg:py-28"
+      className="scroll-mt-header bg-off-white py-24 md:py-28 lg:py-32"
       {...sectionProps}
     >
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8" ref={ref}>
         <motion.div
-          ref={ref}
           initial={{ opacity: 0, y: 28 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.55, ease: easeOut }}
-          className="mb-14 grid items-center gap-10 lg:grid-cols-2 lg:gap-16 lg:items-start"
+          transition={{ duration: 0.6, ease: easeOut }}
+          className="mb-14 text-center"
         >
-          <div className="mx-auto max-w-2xl text-center lg:mx-0 lg:max-w-xl lg:text-left">
-            <SectionWordTitle
-              className="text-3xl font-semibold tracking-tight text-ski-black md:text-4xl lg:text-5xl"
-              text="Let's build something powerful together"
-            />
-            <p className="mt-4 text-base leading-relaxed text-zen-muted md:text-lg">
-              Share goals for <strong className="font-semibold text-ski-black">business automation</strong>,{' '}
-              <strong className="font-semibold text-ski-black">full stack development</strong>, or product roadmap
-              support. We respond within one business day.
-            </p>
-          </div>
-          
+          <span className="badge mb-5 inline-flex">Contact us</span>
+          <h2 className="text-display mx-auto max-w-2xl text-ink">
+            Let's build something
+            <br />
+            <span className="heading-serif gradient-text">powerful together</span>
+          </h2>
+          <p className="mx-auto mt-5 max-w-lg text-base leading-[1.7] text-muted md:text-[1.05rem]">
+            Share goals for <strong className="font-semibold text-ink">business automation</strong>,{' '}
+            <strong className="font-semibold text-ink">full stack development</strong>, or product roadmap
+            support. We respond within one business day.
+          </p>
         </motion.div>
 
         <div className="grid gap-12 lg:grid-cols-2 lg:gap-16">
@@ -113,7 +111,7 @@ const Contact: React.FC = () => {
             <form onSubmit={handleSubmit} className="space-y-5">
               <div className="grid gap-5 sm:grid-cols-2">
                 <div>
-                  <label htmlFor="name" className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-zen-muted">
+                  <label htmlFor="name" className="mb-1.5 block text-[0.65rem] font-bold uppercase tracking-wider text-muted">
                     Name *
                   </label>
                   <input
@@ -122,13 +120,13 @@ const Contact: React.FC = () => {
                     required
                     value={formData.name}
                     onChange={handleChange}
-                    className="w-full rounded-lg border border-zen-line bg-white px-4 py-3 text-sm text-ski-black outline-none transition-shadow duration-200 placeholder:text-neutral-400 focus:border-ski-accent focus:ring-2 focus:ring-ski-accent/20"
-                    placeholder="Your name"
+                    className="w-full rounded-xl border border-[#E5E2DE] bg-white px-4 py-3.5 text-sm text-ink outline-none transition-[border-color,box-shadow] duration-200 placeholder:text-muted/50 focus:border-brand focus:ring-2 focus:ring-brand/15"
+                    placeholder="Your name…"
                     autoComplete="name"
                   />
                 </div>
                 <div>
-                  <label htmlFor="email" className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-zen-muted">
+                  <label htmlFor="email" className="mb-1.5 block text-[0.65rem] font-bold uppercase tracking-wider text-muted">
                     Email *
                   </label>
                   <input
@@ -138,14 +136,15 @@ const Contact: React.FC = () => {
                     required
                     value={formData.email}
                     onChange={handleChange}
-                    className="w-full rounded-lg border border-zen-line bg-white px-4 py-3 text-sm text-ski-black outline-none transition-shadow duration-200 placeholder:text-neutral-400 focus:border-ski-accent focus:ring-2 focus:ring-ski-accent/20"
+                    spellCheck={false}
+                    className="w-full rounded-xl border border-[#E5E2DE] bg-white px-4 py-3.5 text-sm text-ink outline-none transition-[border-color,box-shadow] duration-200 placeholder:text-muted/50 focus:border-brand focus:ring-2 focus:ring-brand/15"
                     placeholder="you@company.com"
                     autoComplete="email"
                   />
                 </div>
               </div>
               <div>
-                <label htmlFor="company" className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-zen-muted">
+                <label htmlFor="company" className="mb-1.5 block text-[0.65rem] font-bold uppercase tracking-wider text-muted">
                   Company
                 </label>
                 <input
@@ -153,12 +152,13 @@ const Contact: React.FC = () => {
                   name="company"
                   value={formData.company}
                   onChange={handleChange}
-                  className="w-full rounded-lg border border-zen-line bg-white px-4 py-3 text-sm text-ski-black outline-none transition-shadow duration-200 placeholder:text-neutral-400 focus:border-ski-accent focus:ring-2 focus:ring-ski-accent/20"
-                  placeholder="Organization"
+                  className="w-full rounded-xl border border-[#E5E2DE] bg-white px-4 py-3.5 text-sm text-ink outline-none transition-[border-color,box-shadow] duration-200 placeholder:text-muted/50 focus:border-brand focus:ring-2 focus:ring-brand/15"
+                  placeholder="Organization…"
+                  autoComplete="organization"
                 />
               </div>
               <div>
-                <label htmlFor="message" className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-zen-muted">
+                <label htmlFor="message" className="mb-1.5 block text-[0.65rem] font-bold uppercase tracking-wider text-muted">
                   Message *
                 </label>
                 <textarea
@@ -168,21 +168,21 @@ const Contact: React.FC = () => {
                   rows={5}
                   value={formData.message}
                   onChange={handleChange}
-                  className="w-full resize-none rounded-lg border border-zen-line bg-white px-4 py-3 text-sm text-ski-black outline-none transition-shadow duration-200 placeholder:text-neutral-400 focus:border-ski-accent focus:ring-2 focus:ring-ski-accent/20"
+                  className="w-full resize-none rounded-xl border border-[#E5E2DE] bg-white px-4 py-3.5 text-sm text-ink outline-none transition-[border-color,box-shadow] duration-200 placeholder:text-muted/50 focus:border-brand focus:ring-2 focus:ring-brand/15"
                   placeholder="Project scope, timeline, and links…"
                 />
               </div>
               {submitError ? (
-                <p className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800" role="alert">
+                <p className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800" role="alert" aria-live="polite">
                   {submitError}
                 </p>
               ) : null}
               <motion.button
                 type="submit"
                 disabled={isSubmitting || isSubmitted}
-                whileHover={{ scale: isSubmitting || isSubmitted ? 1 : 1.01 }}
-                whileTap={{ scale: isSubmitting || isSubmitted ? 1 : 0.99 }}
-                className="flex w-full items-center justify-center gap-2 rounded-lg bg-ski-black py-3.5 text-sm font-semibold text-white transition-colors duration-300 hover:bg-ski-accent disabled:opacity-60"
+                whileHover={{ y: isSubmitting || isSubmitted ? 0 : -2 }}
+                whileTap={{ scale: isSubmitting || isSubmitted ? 1 : 0.98 }}
+                className="flex w-full items-center justify-center gap-2 rounded-xl bg-ink py-3.5 text-sm font-semibold text-white transition-all duration-300 hover:bg-brand disabled:opacity-60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/30 focus-visible:ring-offset-1"
               >
                 {isSubmitted ? (
                   <>
@@ -207,16 +207,16 @@ const Contact: React.FC = () => {
             transition={{ duration: 0.5, delay: 0.15, ease: easeOut }}
             className="flex flex-col gap-6"
           >
-            <div className="rounded-xl border border-zen-line bg-ski-gray/40 p-6">
-              <h3 className="text-sm font-semibold text-ski-black">Direct channels</h3>
-              <p className="mt-2 text-sm text-zen-muted">
+            <div className="rounded-2xl border border-[#E5E2DE] bg-surface p-7">
+              <h3 className="text-sm font-semibold text-ink">Direct channels</h3>
+              <p className="mt-2 text-sm leading-[1.6] text-muted">
                 Prefer chat? Reach us on WhatsApp for quick questions or to book a consultation.
               </p>
               <a
                 href={WHATSAPP_HREF}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-lg border border-zen-line bg-white py-3 text-sm font-semibold text-ski-black transition-colors duration-300 hover:border-ski-accent hover:text-ski-accent sm:w-auto sm:px-6"
+                className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-xl border border-[#E5E2DE] bg-white py-3 text-sm font-semibold text-ink transition-[border-color,color,transform,box-shadow] duration-200 active:scale-[0.98] select-none hover:border-brand hover:text-brand sm:hover:-translate-y-0.5 sm:w-auto sm:px-6 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/30 focus-visible:ring-offset-1"
               >
                 <MessageCircle className="h-4 w-4 text-[#25D366]" strokeWidth={2} />
                 WhatsApp SKIZEN
@@ -228,15 +228,14 @@ const Contact: React.FC = () => {
                 <motion.a
                   key={info.title}
                   href={info.link}
-                  {...interactiveCardProps}
-                  className="flex items-center gap-4 rounded-xl border border-zen-line bg-white p-4 transition-shadow duration-300 hover:shadow-card"
+                  className="flex items-center gap-4 rounded-2xl border border-[#E5E2DE] bg-white p-5 shadow-card transition-all duration-300 active:scale-[0.98] select-none hover:-translate-y-0.5 hover:shadow-card-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/30 focus-visible:ring-offset-1"
                 >
-                  <div className="flex h-11 w-11 items-center justify-center rounded-lg border border-zen-line bg-ski-gray/40">
-                    <info.icon className="h-5 w-5 text-ski-accent" strokeWidth={1.5} />
+                  <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-[#E5E2DE] bg-surface">
+                    <info.icon className="h-5 w-5 text-brand" strokeWidth={1.5} />
                   </div>
                   <div>
-                    <p className="text-xs font-semibold uppercase tracking-wide text-zen-muted">{info.title}</p>
-                    <p className="text-sm font-medium text-ski-black">{info.value}</p>
+                    <p className="text-[0.65rem] font-bold uppercase tracking-wider text-muted">{info.title}</p>
+                    <p className="text-sm font-medium text-ink">{info.value}</p>
                   </div>
                 </motion.a>
               ))}
@@ -250,7 +249,7 @@ const Contact: React.FC = () => {
                     href={s.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex h-10 w-10 items-center justify-center rounded-lg border border-zen-line text-zen-muted transition-colors hover:border-ski-accent hover:text-ski-accent"
+                    className="flex h-11 w-11 items-center justify-center rounded-xl border border-[#E5E2DE] text-muted transition-all active:scale-[0.92] select-none hover:border-brand hover:text-brand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/30 focus-visible:ring-offset-1"
                     aria-label={s.label}
                   >
                     <s.icon className="h-4 w-4" strokeWidth={1.5} />

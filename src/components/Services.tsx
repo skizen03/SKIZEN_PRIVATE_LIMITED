@@ -1,186 +1,232 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, MouseEvent } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
-import {
-  Megaphone,
-  Share2,
-  Sparkles,
-  Instagram,
-  PenLine,
-  Search,
-  Gauge,
-  MousePointerClick,
-  Users,
-  Video,
-  UserPlus,
-  Compass,
-  Globe,
-  Layers,
-  Boxes,
-  Stethoscope,
-  GraduationCap,
-  Package,
-  LayoutDashboard,
-  LineChart,
-  Workflow,
-  Palette,
-  Code2,
-  ChevronRight,
-  ShoppingCart,
-} from 'lucide-react';
-import { SectionWordTitle } from './typography/WordMotion';
-import CorporateTechVisual from './tech-visuals/CorporateTechVisual';
+import { ArrowUpRight } from 'lucide-react';
 import { easeOut } from '../lib/motion';
-import { useSectionMotion, interactiveCardProps } from '../hooks/useSectionMotion';
+import { useSectionMotion } from '../hooks/useSectionMotion';
 
 type Category = 'marketing' | 'technology';
 
 const marketing = [
-  { icon: Megaphone, title: 'Digital marketing', desc: 'Integrated campaigns across channels.' },
-  { icon: Share2, title: 'Social media management', desc: 'Editorial rhythm, reporting, and community care.' },
-  { icon: Sparkles, title: 'Brand presence', desc: 'Positioning, narratives, and visual consistency.' },
-  { icon: Instagram, title: 'Instagram growth', desc: 'Content systems tuned for reach and conversion.' },
-  { icon: PenLine, title: 'Content creation', desc: 'Copy, creative direction, and production coordination.' },
-  { icon: Search, title: 'SEO', desc: 'Technical foundation and content that earns visibility.' },
-  { icon: Gauge, title: 'Performance marketing', desc: 'Measurement-first acquisition and retention.' },
-  { icon: MousePointerClick, title: 'Paid advertising', desc: 'Search, social, and programmatic with clear ROAS goals.' },
-  { icon: Users, title: 'Influencer marketing', desc: 'Vetted partnerships and disclosure-safe activations.' },
-  { icon: Video, title: 'Video production', desc: 'Storyboards through delivery for web and social.' },
-  { icon: UserPlus, title: 'Lead generation', desc: 'Funnels, landing pages, and CRM-ready handoffs.' },
-  { icon: Compass, title: 'Brand strategy', desc: 'Research-backed roadmaps for portfolio and launch brands.' },
+  { title: 'Digital marketing', desc: 'Integrated campaigns across channels.', hot: false },
+  { title: 'Social media management', desc: 'Editorial rhythm, reporting, and community care.', hot: false },
+  { title: 'Brand presence', desc: 'Positioning, narratives, and visual consistency.', hot: true },
+  { title: 'Instagram growth', desc: 'Content systems tuned for reach and conversion.', hot: false },
+  { title: 'Content creation', desc: 'Copy, creative direction, and production coordination.', hot: false },
+  { title: 'SEO', desc: 'Technical foundation and content that earns visibility.', hot: false },
+  { title: 'Performance marketing', desc: 'Measurement-first acquisition and retention.', hot: true },
+  { title: 'Paid advertising', desc: 'Search, social, and programmatic with clear ROAS goals.', hot: false },
+  { title: 'Influencer marketing', desc: 'Vetted partnerships and disclosure-safe activations.', hot: false },
+  { title: 'Video production', desc: 'Storyboards through delivery for web and social.', hot: false },
+  { title: 'Lead generation', desc: 'Funnels, landing pages, and CRM-ready handoffs.', hot: true },
+  { title: 'Brand strategy', desc: 'Research-backed roadmaps for portfolio and launch brands.', hot: false },
 ];
 
 const technology = [
-  { icon: Globe, title: 'Website development', desc: 'Fast product and marketing sites with clean IA and performance budgets.' },
-  { icon: Layers, title: 'Full stack web applications', desc: 'React, Node, APIs, and cloud-native deploys.' },
-  { icon: Boxes, title: 'ERP systems', desc: 'Operations, finance hooks, and role-based workflows.' },
-  { icon: LayoutDashboard, title: 'CRM systems', desc: 'Pipeline, tasks, and integrations your team adopts.' },
-  { icon: Package, title: 'Inventory management', desc: 'Stock, transfers, and outlet-level visibility.' },
-  { icon: Stethoscope, title: 'Hospital management systems', desc: 'Patient, billing, and admin on one backbone.' },
-  { icon: GraduationCap, title: 'Student management portals', desc: 'Admissions, academics, and communication.' },
-  { icon: ShoppingCart, title: 'Ordering systems', desc: 'B2B/B2C ordering with fulfillment hooks.' },
-  { icon: LayoutDashboard, title: 'Admin dashboards', desc: 'Role-based control centers and reporting.' },
-  { icon: LineChart, title: 'Analytics platforms', desc: 'Event models, dashboards, and exports.' },
-  { icon: Workflow, title: 'Automation tools', desc: 'Workflows that reduce manual ops and errors.' },
-  { icon: Palette, title: 'UI / UX design', desc: 'Product-grade interfaces and design systems.' },
-  { icon: Code2, title: 'Custom software development', desc: 'Bespoke modules when off-the-shelf is not enough.' },
+  { title: 'Website development', desc: 'Fast product and marketing sites with clean IA and performance budgets.', hot: false },
+  { title: 'Full stack applications', desc: 'React, Node, APIs, and cloud-native deploys.', hot: true },
+  { title: 'ERP systems', desc: 'Operations, finance hooks, and role-based workflows.', hot: true },
+  { title: 'CRM systems', desc: 'Pipeline, tasks, and integrations your team adopts.', hot: false },
+  { title: 'Inventory management', desc: 'Stock, transfers, and outlet-level visibility.', hot: false },
+  { title: 'Hospital management', desc: 'Patient, billing, and admin on one backbone.', hot: false },
+  { title: 'Student portals', desc: 'Admissions, academics, and communication.', hot: false },
+  { title: 'Ordering systems', desc: 'B2B/B2C ordering with fulfillment hooks.', hot: false },
+  { title: 'Admin dashboards', desc: 'Role-based control centers and reporting.', hot: false },
+  { title: 'Analytics platforms', desc: 'Event models, dashboards, and exports.', hot: true },
+  { title: 'Automation tools', desc: 'Workflows that reduce manual ops and errors.', hot: false },
+  { title: 'UI / UX design', desc: 'Product-grade interfaces and design systems.', hot: false },
+  { title: 'Custom software', desc: 'Bespoke modules when off-the-shelf is not enough.', hot: false },
 ];
+
+const listVariants = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: { staggerChildren: 0.05 },
+  },
+};
+
+const rowVariants = {
+  hidden: { opacity: 0, y: 30, filter: 'blur(4px)' },
+  show: {
+    opacity: 1,
+    y: 0,
+    filter: 'blur(0px)',
+    transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] },
+  },
+};
+
+const SpotlightRow = ({ svc, index }: { svc: typeof marketing[0]; index: number }) => {
+  const divRef = useRef<HTMLAnchorElement>(null);
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [opacity, setOpacity] = useState(0);
+
+  const handleMouseMove = (e: MouseEvent<HTMLAnchorElement>) => {
+    if (!divRef.current) return;
+    const div = divRef.current;
+    const rect = div.getBoundingClientRect();
+    setPosition({ x: e.clientX - rect.left, y: e.clientY - rect.top });
+  };
+
+  return (
+    <motion.a
+      href="#contact"
+      ref={divRef}
+      onMouseMove={handleMouseMove}
+      onMouseEnter={() => setOpacity(1)}
+      onMouseLeave={() => setOpacity(0)}
+      variants={rowVariants}
+      className="group relative flex flex-col justify-between gap-4 overflow-hidden border-b border-[#E5E2DE] py-10 transition-colors duration-500 hover:border-ink sm:flex-row sm:items-center sm:gap-8 active:bg-black/5 sm:active:bg-transparent"
+    >
+      {/* Spotlight Effect */}
+      <div
+        className="pointer-events-none absolute -inset-px transition-opacity duration-300 hidden sm:block"
+        style={{
+          opacity,
+          background: `radial-gradient(600px circle at ${position.x}px ${position.y}px, rgba(232,101,10,0.04), transparent 40%)`,
+        }}
+      />
+
+      <div className="relative z-10 flex flex-col gap-4 sm:flex-row sm:items-baseline sm:gap-10 w-full">
+        <span className="font-mono text-sm tracking-wider text-muted/40 transition-all duration-500 group-hover:text-brand sm:mt-3 group-hover:-translate-y-1">
+          {(index + 1).toString().padStart(2, '0')}
+        </span>
+        
+        <div className="flex-1">
+          <h3 className="text-3xl font-light tracking-tighter text-ink transition-all duration-500 group-hover:text-brand group-hover:translate-x-3 sm:text-4xl lg:text-[2.75rem]">
+            {svc.title}
+            {svc.hot && (
+              <span className="ml-4 inline-flex translate-y-[-8px] items-center rounded-full bg-orange-tint px-2.5 py-1 text-[0.6rem] font-bold uppercase tracking-widest text-brand transition-all duration-300 group-hover:bg-brand group-hover:text-white">
+                Popular
+              </span>
+            )}
+          </h3>
+          <p className="mt-4 max-w-lg text-sm leading-[1.7] text-muted transition-all duration-500 group-hover:translate-x-3 group-hover:text-ink/80 sm:text-base">
+            {svc.desc}
+          </p>
+        </div>
+      </div>
+      
+      {/* Hover Reveal Arrow */}
+      <div className="relative z-10 hidden h-16 w-16 shrink-0 items-center justify-center rounded-full border border-[#E5E2DE] text-ink transition-all duration-500 group-hover:scale-110 group-hover:border-brand group-hover:bg-brand group-hover:text-white group-hover:shadow-[0_0_20px_rgba(232,101,10,0.2)] sm:flex">
+        <ArrowUpRight size={28} className="transition-transform duration-500 group-hover:rotate-45" />
+      </div>
+      
+      {/* Mobile Arrow */}
+      <div className="absolute right-0 top-10 text-brand sm:hidden">
+        <ArrowUpRight size={24} />
+      </div>
+    </motion.a>
+  );
+};
 
 const Services: React.FC = () => {
   const { sectionProps } = useSectionMotion();
   const [tab, setTab] = useState<Category>('technology');
-  const [ref, inView] = useInView({ triggerOnce: true, threshold: 0.06 });
+  const [ref, inView] = useInView({ triggerOnce: true, threshold: 0.05 });
 
   const list = tab === 'marketing' ? marketing : technology;
 
   return (
     <motion.section
       id="services"
-      className="scroll-mt-header bg-white py-20 md:py-24 lg:py-28"
+      className="scroll-mt-header bg-off-white py-24 md:py-32"
       {...sectionProps}
     >
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <motion.div
-          ref={ref}
-          initial={{ opacity: 0, y: 26 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.55, ease: easeOut }}
-          className="mb-12 space-y-10"
-        >
-          <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-16 lg:items-start">
-            <div className="mx-auto max-w-2xl text-center lg:mx-0 lg:max-w-xl lg:text-left">
-              <SectionWordTitle
-                className="text-3xl font-semibold tracking-tight text-ski-black md:text-4xl lg:text-5xl"
-                text="Services"
-              />
-              <p className="mt-4 text-base leading-relaxed text-zen-muted md:text-lg">
-                Engineering-led delivery: <strong className="font-semibold text-ski-black">custom software</strong>,{' '}
-                <strong className="font-semibold text-ski-black">integrations</strong>, and product UX first. When you
-                need reach and acquisition, our{' '}
-                <strong className="font-semibold text-ski-black">growth &amp; digital</strong> practice plugs into the
-                same team.
+      <div className="mx-auto max-w-7xl px-5 sm:px-6 lg:px-8" ref={ref}>
+        <div className="flex flex-col gap-16 lg:flex-row lg:gap-24">
+          
+          {/* Left Column: Sticky Header */}
+          <div className="lg:w-1/3 lg:shrink-0">
+            <motion.div
+              initial={{ opacity: 0, y: 24 }}
+              animate={inView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.6, ease: easeOut }}
+              className="sticky top-32 flex flex-col items-start"
+            >
+              <div className="group inline-flex items-center gap-2 mb-6">
+                <span className="h-1.5 w-1.5 rounded-full bg-brand transition-transform duration-300 group-hover:scale-150" />
+                <span className="badge inline-flex">What we do</span>
+              </div>
+              <h2 className="text-display text-ink">
+                Services built for
+                <br />
+                <span className="heading-serif gradient-text">builders &amp; operators</span>
+              </h2>
+              <p className="mt-6 text-base leading-[1.7] text-muted md:text-lg">
+                Engineering-led delivery: custom software, integrations, and product UX first.
+                When you need reach and acquisition, our growth practice plugs into the same team.
               </p>
-            </div>
-            <div className="mx-auto flex w-full max-w-[280px] justify-center sm:max-w-xs lg:max-w-none lg:justify-end">
-              <CorporateTechVisual variant="services" compact className="max-w-[320px]" />
-            </div>
-          </div>
 
-          <div className="flex justify-center">
-            <div
-              className="inline-flex rounded-lg border border-zen-line bg-ski-gray/40 p-1"
-              role="tablist"
-              aria-label="Service category"
-            >
-            <motion.button
-              type="button"
-              role="tab"
-              aria-selected={tab === 'technology'}
-              onClick={() => setTab('technology')}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.97 }}
-              transition={{ duration: 0.15 }}
-              className={`rounded-md px-4 py-2 text-sm font-semibold transition-colors duration-200 ${
-                tab === 'technology' ? 'bg-white text-ski-black shadow-sm' : 'text-zen-muted hover:text-ski-black'
-              }`}
-            >
-              Technology
-            </motion.button>
-            <motion.button
-              type="button"
-              role="tab"
-              aria-selected={tab === 'marketing'}
-              onClick={() => setTab('marketing')}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.97 }}
-              transition={{ duration: 0.15 }}
-              className={`rounded-md px-4 py-2 text-sm font-semibold transition-colors duration-200 ${
-                tab === 'marketing' ? 'bg-white text-ski-black shadow-sm' : 'text-zen-muted hover:text-ski-black'
-              }`}
-            >
-              Growth &amp; digital
-            </motion.button>
-          </div>
-          </div>
-        </motion.div>
-
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={tab}
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.35, ease: easeOut }}
-            className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
-          >
-            {list.map((item, index) => (
-              <motion.div
-                key={item.title}
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.35, delay: index * 0.02, ease: easeOut }}
-                {...interactiveCardProps}
-                className="group flex cursor-default flex-col rounded-xl border border-zen-line bg-white p-5 shadow-sm transition-shadow duration-300 hover:border-ski-accent/20 hover:shadow-card-hover"
+              {/* Tab switcher */}
+              <div
+                className="mt-10 inline-flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:rounded-2xl sm:border sm:border-[#E5E2DE] sm:bg-surface sm:p-1.5"
+                role="tablist"
+                aria-label="Service category"
               >
-                <div className="mb-3 flex items-start justify-between gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-zen-line bg-ski-gray/40 transition-colors duration-300 group-hover:border-ski-accent/25">
-                    <item.icon className="h-5 w-5 text-ski-accent" strokeWidth={1.5} />
-                  </div>
-                  <ChevronRight className="h-4 w-4 text-zen-muted opacity-0 transition-all duration-300 group-hover:translate-x-0.5 group-hover:text-ski-accent group-hover:opacity-100" />
-                </div>
-                <h3 className="text-sm font-semibold text-ski-black">{item.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-zen-muted">{item.desc}</p>
-                <a
-                  href="#contact"
-                  className="mt-4 inline-flex items-center gap-1 text-xs font-semibold text-ski-accent opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-                >
-                  Learn more
-                  <ChevronRight className="h-3 w-3" />
-                </a>
+                {(['technology', 'marketing'] as Category[]).map((cat) => (
+                  <button
+                    key={cat}
+                    type="button"
+                    role="tab"
+                    aria-selected={tab === cat}
+                    onClick={() => setTab(cat)}
+                    className={`relative w-full rounded-xl px-6 py-3.5 text-sm font-semibold transition-all duration-500 active:scale-[0.98] select-none sm:w-auto ${
+                      tab === cat
+                        ? 'bg-white text-ink shadow-card sm:shadow-sm'
+                        : 'bg-transparent text-muted hover:text-ink sm:hover:bg-black/5'
+                    }`}
+                  >
+                    {cat === 'technology' ? 'Technology' : 'Growth & digital'}
+                  </button>
+                ))}
+              </div>
+            </motion.div>
+          </div>
+
+          {/* Right Column: Editorial Spotlight List */}
+          <div className="lg:w-2/3">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={tab}
+                variants={listVariants}
+                initial="hidden"
+                animate="show"
+                exit={{ opacity: 0, transition: { duration: 0.2 } }}
+                className="flex flex-col"
+              >
+                {/* Top border for the list */}
+                <div className="h-px w-full bg-[#E5E2DE]" />
+                
+                {list.map((svc, index) => (
+                  <SpotlightRow key={svc.title} svc={svc} index={index} />
+                ))}
               </motion.div>
-            ))}
-          </motion.div>
-        </AnimatePresence>
+            </AnimatePresence>
+
+            {/* Bottom CTA inline within the list flow */}
+            <motion.div
+              initial={{ opacity: 0, y: 24, filter: 'blur(4px)' }}
+              animate={inView ? { opacity: 1, y: 0, filter: 'blur(0px)' } : {}}
+              transition={{ duration: 0.7, delay: 0.6, ease: [0.22, 1, 0.36, 1] }}
+              className="mt-20 flex flex-col items-start gap-6 rounded-3xl border border-[#E5E2DE] bg-white p-8 shadow-sm sm:p-12 transition-colors duration-500 hover:border-brand/30"
+            >
+              <div>
+                <p className="text-2xl font-light tracking-tight text-ink">Not sure where to start?</p>
+                <p className="mt-3 text-base text-muted max-w-md leading-[1.7]">
+                  Book a free 30-minute consultation. We'll map your requirements and propose a clear scope before any commitment.
+                </p>
+              </div>
+              <a
+                href="#contact"
+                className="cta-pulse glow-button mt-2 inline-flex items-center gap-2 rounded-xl bg-brand px-7 py-4 text-sm font-semibold text-white transition-all active:scale-95 select-none hover:-translate-y-1 shadow-[0_4px_20px_rgba(232,101,10,0.4)] sm:hover:shadow-[0_8px_32px_rgba(232,101,10,0.55)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/30 focus-visible:ring-offset-2"
+              >
+                Book a free consultation <ArrowUpRight size={18} />
+              </a>
+            </motion.div>
+          </div>
+          
+        </div>
       </div>
     </motion.section>
   );

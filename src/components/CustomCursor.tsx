@@ -1,66 +1,70 @@
-import React, { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
+import React, { useEffect, useRef, useState } from 'react';
+
+type CursorState = 'default' | 'hover' | 'link';
 
 const CustomCursor: React.FC = () => {
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const [isHovering, setIsHovering] = useState(false);
+  const dotRef = useRef<HTMLDivElement>(null);
+  const raf = useRef<number>(0);
+  const pos = useRef({ x: -100, y: -100 });
+  const [state, setState] = useState<CursorState>('default');
+  const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    const updateMousePosition = (e: MouseEvent) => {
-      setMousePosition({ x: e.clientX, y: e.clientY });
+    // Only show on pointer:fine devices
+    const mq = window.matchMedia('(hover: hover) and (pointer: fine)');
+    if (!mq.matches) return;
+
+    const move = (e: MouseEvent) => {
+      pos.current = { x: e.clientX, y: e.clientY };
+      if (!visible) setVisible(true);
     };
 
-    const handleMouseEnter = () => setIsHovering(true);
-    const handleMouseLeave = () => setIsHovering(false);
+    const over = (e: MouseEvent) => {
+      const target = e.target as Element;
+      if (target.closest('a, [role="link"]')) {
+        setState('link');
+      } else if (target.closest('button, [role="button"], input, textarea, select, [data-cursor-hover]')) {
+        setState('hover');
+      } else {
+        setState('default');
+      }
+    };
 
-    // Add event listeners for interactive elements
-    const interactiveElements = document.querySelectorAll('button, a, [role="button"]');
-    
-    interactiveElements.forEach(el => {
-      el.addEventListener('mouseenter', handleMouseEnter);
-      el.addEventListener('mouseleave', handleMouseLeave);
-    });
+    const leave = () => setVisible(false);
+    const enter = () => setVisible(true);
 
-    window.addEventListener('mousemove', updateMousePosition);
+    window.addEventListener('mousemove', move, { passive: true });
+    window.addEventListener('mouseover', over, { passive: true });
+    document.addEventListener('mouseleave', leave);
+    document.addEventListener('mouseenter', enter);
+
+    const tick = () => {
+      if (dotRef.current) {
+        dotRef.current.style.transform =
+          `translate(calc(${pos.current.x}px - 50%), calc(${pos.current.y}px - 50%))`;
+      }
+      raf.current = requestAnimationFrame(tick);
+    };
+    raf.current = requestAnimationFrame(tick);
 
     return () => {
-      window.removeEventListener('mousemove', updateMousePosition);
-      interactiveElements.forEach(el => {
-        el.removeEventListener('mouseenter', handleMouseEnter);
-        el.removeEventListener('mouseleave', handleMouseLeave);
-      });
+      window.removeEventListener('mousemove', move);
+      window.removeEventListener('mouseover', over);
+      document.removeEventListener('mouseleave', leave);
+      document.removeEventListener('mouseenter', enter);
+      cancelAnimationFrame(raf.current);
     };
-  }, []);
+  }, [visible]);
 
   return (
-    <>
-      <motion.div
-        className="fixed top-0 left-0 w-4 h-4 bg-ski-accent rounded-full pointer-events-none z-50 mix-blend-difference"
-        animate={{
-          x: mousePosition.x - 8,
-          y: mousePosition.y - 8,
-          scale: isHovering ? 2 : 1,
-        }}
-        transition={{
-          type: "spring",
-          stiffness: 500,
-          damping: 28,
-        }}
-      />
-      <motion.div
-        className="fixed top-0 left-0 w-8 h-8 border border-ski-accent rounded-full pointer-events-none z-50 mix-blend-difference"
-        animate={{
-          x: mousePosition.x - 16,
-          y: mousePosition.y - 16,
-          scale: isHovering ? 1.5 : 1,
-        }}
-        transition={{
-          type: "spring",
-          stiffness: 150,
-          damping: 15,
-        }}
-      />
-    </>
+    <div
+      ref={dotRef}
+      className={`cursor-dot cursor-dot--${state}`}
+      style={{ opacity: visible ? 1 : 0, transition: 'opacity 0.3s ease' }}
+      aria-hidden
+    >
+      <div className="cursor-dot__inner" />
+    </div>
   );
 };
 

@@ -1,127 +1,198 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
-import { Target, Eye, Gem } from 'lucide-react';
-import CountUp from './animations/CountUp';
-import { SectionWordTitle } from './typography/WordMotion';
-import CorporateTechVisual from './tech-visuals/CorporateTechVisual';
+import { CheckCircle, Code2, Layers, Zap } from 'lucide-react';
 import { easeOut } from '../lib/motion';
-import { useSectionMotion, interactiveSoftProps } from '../hooks/useSectionMotion';
+import { useSectionMotion } from '../hooks/useSectionMotion';
 
-const pillars = [
-  {
-    icon: Target,
-    title: 'Mission',
-    text: 'Deliver reliable software and integrations—clear scope, measurable impact, and systems your team can run for years.',
-  },
-  {
-    icon: Eye,
-    title: 'Vision',
-    text: 'Be the engineering partner businesses trust for digital products, enterprise workflows, and automation across India and beyond.',
-  },
-  {
-    icon: Gem,
-    title: 'Values',
-    text: 'Precision, transparency, and craftsmanship—from first API to hospital-grade uptime.',
-  },
+const STATS = [
+  { icon: Layers, value: '15+', label: 'Projects delivered', accent: true },
+  { icon: Code2, value: '5+', label: 'Years engineering', accent: false },
+  { icon: Zap, value: '98%', label: 'Client satisfaction', accent: false },
 ];
+
+const BULLETS = [
+  'Senior engineers — not freelancers or junior developers',
+  'Full-cycle delivery: design, build, test, deploy, support',
+  'Hyderabad-based with global delivery standards',
+  'Specialised in ERP, CRM, automation & web applications',
+];
+
+/** 3-D tilt card — tracks mouse within the card */
+function TiltCard({ children, className = '' }: { children: React.ReactNode; className?: string }) {
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+
+    const onMove = (e: MouseEvent) => {
+      const rect = el.getBoundingClientRect();
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height / 2;
+      const dx = (e.clientX - cx) / (rect.width / 2);
+      const dy = (e.clientY - cy) / (rect.height / 2);
+      el.style.transform = `perspective(800px) rotateX(${-dy * 6}deg) rotateY(${dx * 6}deg) translateY(-4px)`;
+    };
+    const onLeave = () => {
+      el.style.transform = 'perspective(800px) rotateX(0deg) rotateY(0deg) translateY(0px)';
+    };
+
+    el.addEventListener('mousemove', onMove);
+    el.addEventListener('mouseleave', onLeave);
+    return () => {
+      el.removeEventListener('mousemove', onMove);
+      el.removeEventListener('mouseleave', onLeave);
+    };
+  }, []);
+
+  return (
+    <div
+      ref={ref}
+      className={`tilt-card ${className}`}
+      style={{ transition: 'transform 0.5s cubic-bezier(0.22,1,0.36,1), box-shadow 0.5s ease' }}
+    >
+      {children}
+    </div>
+  );
+}
 
 const About: React.FC = () => {
   const { sectionProps } = useSectionMotion();
   const [ref, inView] = useInView({ triggerOnce: true, threshold: 0.08 });
 
-  const stats = [
-    { number: 10, suffix: '+', label: 'Active client relationships' },
-    { number: 500, suffix: '+', label: 'Projects delivered' },
-    { number: 98, suffix: '%', label: 'Delivery satisfaction' },
-    { number: 24, suffix: '/7', label: 'Support mindset' },
-  ];
-
   return (
     <motion.section
       id="about"
-      className="scroll-mt-header bg-ski-gray py-20 md:py-24 lg:py-28"
+      className="scroll-mt-header relative overflow-hidden bg-white py-28 md:py-32 lg:py-36"
       {...sectionProps}
     >
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <motion.div
-          ref={ref}
-          initial={{ opacity: 0, y: 28 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.55, ease: easeOut }}
-          className="mb-14 grid items-center gap-10 lg:grid-cols-2 lg:gap-16 lg:items-start"
-        >
-          <div className="mx-auto max-w-3xl text-center lg:mx-0 lg:max-w-xl lg:text-left">
-            <SectionWordTitle
-              className="text-3xl font-semibold tracking-tight text-ski-black md:text-4xl lg:text-5xl"
-              text="A technology partner for serious operators"
-            />
-            <p className="mt-6 text-base leading-relaxed text-zen-muted md:text-lg">
-              SKIZEN ships production-grade software: custom web applications,{' '}
-              <strong className="font-semibold text-ski-black">ERP and CRM systems</strong>,{' '}
-              <strong className="font-semibold text-ski-black">student portals</strong>,{' '}
-              <strong className="font-semibold text-ski-black">hospital platforms</strong>, and automation. We stay
-              accountable from architecture through launch—and help you scale distribution when the product is ready.
+      {/* Subtle blob accent */}
+      <div
+        className="blob blob-1 pointer-events-none absolute -right-40 top-0 opacity-30"
+        aria-hidden
+      />
+
+      <div className="relative z-10 mx-auto max-w-7xl px-5 sm:px-6 lg:px-8" ref={ref}>
+        <div className="grid items-center gap-16 lg:grid-cols-2 lg:gap-20">
+          {/* ── Left: Editorial text ── */}
+          <motion.div
+            initial={{ opacity: 0, x: -28 }}
+            animate={inView ? { opacity: 1, x: 0 } : {}}
+            transition={{ duration: 0.7, ease: easeOut }}
+          >
+            <span className="badge mb-6 inline-flex">About SKIZEN</span>
+            <h2 className="text-display text-ink">
+              A product studio built for{' '}
+              <br />
+              <span className="heading-serif gradient-text">serious builders</span>
+            </h2>
+            <p className="mt-6 text-[1.0rem] leading-[1.75] text-muted">
+              SKIZEN is a software engineering company and technology partner
+              headquartered in Hyderabad, India. We build bespoke digital products —
+              from enterprise dashboards and CRM systems to hospital portals and
+              full-stack SaaS platforms.
             </p>
-          </div>
-          <div className="mx-auto flex w-full max-w-[280px] justify-center sm:max-w-xs lg:max-w-none lg:justify-end">
-            <CorporateTechVisual variant="about" compact className="max-w-[320px]" />
-          </div>
-        </motion.div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          animate={inView ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.5, delay: 0.1, ease: easeOut }}
-          className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-4"
-        >
-          {stats.map((stat) => (
-            <div
-              key={stat.label}
-              className="rounded-xl border border-zen-line bg-white px-4 py-6 text-center shadow-sm"
-            >
-              <CountUp
-                end={stat.number}
-                suffix={stat.suffix}
-                className="text-2xl font-semibold tabular-nums text-ski-black md:text-3xl"
-                duration={1.8}
-              />
-              <p className="mt-2 text-xs font-medium leading-snug text-zen-muted">{stat.label}</p>
-            </div>
-          ))}
-        </motion.div>
+            <ul className="mt-8 space-y-3">
+              {BULLETS.map((b, i) => (
+                <motion.li
+                  key={b}
+                  className="flex items-start gap-3 text-sm leading-[1.6] text-muted"
+                  initial={{ opacity: 0, x: -16 }}
+                  animate={inView ? { opacity: 1, x: 0 } : {}}
+                  transition={{ duration: 0.45, delay: 0.2 + i * 0.08, ease: easeOut }}
+                >
+                  <CheckCircle
+                    className="mt-0.5 h-4 w-4 shrink-0 text-brand"
+                    strokeWidth={2.5}
+                  />
+                  {b}
+                </motion.li>
+              ))}
+            </ul>
 
-        <div className="mt-16 grid gap-6 md:grid-cols-3">
-          {pillars.map((p, index) => (
-            <motion.article
-              key={p.title}
-              initial={{ opacity: 0, y: 22 }}
-              animate={inView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.45, delay: 0.15 + index * 0.08, ease: easeOut }}
-              {...interactiveSoftProps}
-              className="cursor-default rounded-xl border border-zen-line bg-white p-6 shadow-sm transition-shadow duration-300 hover:border-ski-accent/15 hover:shadow-card"
+            <motion.a
+              href="#contact"
+              className="underline-reveal mt-10 inline-flex items-center gap-2 text-sm font-semibold text-ink"
+              initial={{ opacity: 0 }}
+              animate={inView ? { opacity: 1 } : {}}
+              transition={{ duration: 0.5, delay: 0.55, ease: easeOut }}
             >
-              <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-lg border border-zen-line bg-ski-gray/50">
-                <p.icon className="h-5 w-5 text-ski-accent" strokeWidth={1.5} />
-              </div>
-              <h3 className="text-lg font-semibold text-ski-black">{p.title}</h3>
-              <p className="mt-3 text-sm leading-relaxed text-zen-muted">{p.text}</p>
-            </motion.article>
-          ))}
+              Book a free consultation →
+            </motion.a>
+          </motion.div>
+
+          {/* ── Right: 3D tilt stat cards ── */}
+          <motion.div
+            className="grid gap-4"
+            initial={{ opacity: 0, x: 28 }}
+            animate={inView ? { opacity: 1, x: 0 } : {}}
+            transition={{ duration: 0.7, delay: 0.1, ease: easeOut }}
+          >
+            {STATS.map((s, i) => (
+              <TiltCard key={s.label}>
+                <motion.div
+                  className={`animated-border flex items-center gap-5 rounded-2xl border p-6 ${
+                    s.accent
+                      ? 'border-brand/20 bg-orange-tint'
+                      : 'border-[#E5E2DE] bg-surface'
+                  }`}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={inView ? { opacity: 1, y: 0 } : {}}
+                  transition={{ duration: 0.45, delay: 0.25 + i * 0.1, ease: easeOut }}
+                >
+                  <div
+                    className={`flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl ${
+                      s.accent ? 'bg-brand/10' : 'bg-white shadow-card'
+                    }`}
+                  >
+                    <s.icon
+                      className={`h-6 w-6 ${s.accent ? 'text-brand' : 'text-ink'}`}
+                      strokeWidth={1.5}
+                    />
+                  </div>
+                  <div>
+                    <p className="text-3xl font-bold tracking-tight text-ink">{s.value}</p>
+                    <p className="mt-0.5 text-sm text-muted">{s.label}</p>
+                  </div>
+                </motion.div>
+              </TiltCard>
+            ))}
+
+            {/* Editorial quote card */}
+            <TiltCard>
+              <motion.blockquote
+                className="glass-card rounded-2xl p-6"
+                initial={{ opacity: 0, y: 20 }}
+                animate={inView ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.45, delay: 0.55, ease: easeOut }}
+              >
+                <div className="mb-3 text-3xl leading-none text-brand opacity-50">"</div>
+                <p className="text-sm leading-[1.7] text-ink">
+                  We don't just write code. We engineer systems that scale with your
+                  business and adapt to your evolving needs.
+                </p>
+                <footer className="mt-4 flex items-center gap-3">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-brand text-[0.7rem] font-bold text-white">
+                    S
+                  </div>
+                  <div>
+                    <p className="text-xs font-semibold text-ink">SKIZEN Engineering</p>
+                    <p className="text-[0.65rem] text-muted">Hyderabad, India</p>
+                  </div>
+                </footer>
+              </motion.blockquote>
+            </TiltCard>
+          </motion.div>
         </div>
+      </div>
 
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={inView ? { opacity: 1 } : {}}
-          transition={{ duration: 0.5, delay: 0.35 }}
-          className="mt-14 flex flex-col items-center gap-2 border-t border-zen-line pt-10 text-center"
-        >
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-zen-muted">Our trajectory</p>
-          <p className="max-w-2xl text-sm text-zen-muted">
-            From single-product MVPs to multi-branch ERP and analytics programs—SKIZEN has grown engineering depth while
-            keeping senior oversight on architecture, security, and delivery.
-          </p>
-        </motion.div>
+      {/* ── Wave Divider ── */}
+      <div className="pointer-events-none absolute bottom-0 left-0 z-10 w-full" aria-hidden>
+        <svg viewBox="0 0 1440 50" className="w-full" preserveAspectRatio="none" style={{ display: 'block', height: 50 }}>
+          <path d="M0,20 C360,50 1080,0 1440,25 L1440,50 L0,50 Z" fill="#F3F1EE" fillOpacity="1" />
+        </svg>
       </div>
     </motion.section>
   );
